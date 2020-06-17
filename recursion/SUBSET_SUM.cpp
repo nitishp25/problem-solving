@@ -15,14 +15,10 @@ void subset(int arr[], int start, int size, int k, vector<int> out) {
         return;
     }
 
-    for(int i = start; i < size; i++) {
-        if(arr[i] <= k) {
-            out.push_back(arr[i]);
-            subset(arr, start+1, size, k-arr[i], out);
-            out.pop_back();
-        }
-        else
-            subset(arr, start+1, size, k, out);
+    subset(arr, start+1, size, k, out);
+    if(arr[start] <= k) {
+        out.push_back(arr[start]);
+        subset(arr, start+1, size, k - arr[start], out);
     }
     return;
 }
