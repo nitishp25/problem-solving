@@ -22,22 +22,24 @@ int decrypt(map<char, int> chars, vector<string> words) {
 
 }
 
-int solve(map<char, int> chars, vector<string> words, map<char, int>::iterator it, vector<bool> &istaken) {
+int solve(map<char, int> chars, vector<string> words, set<char> s, set<char>::iterator it, vector<bool> &istaken) {
 
-    if(it == chars.end()) {
-        if(decrypt(chars, words))
-            return 1;
-        return 0;
+    if(it == s.end()) {
+        // if(decrypt(chars, words) == 1)
+        //    return 1;
+        return 1;
     }
     cout<<"Solving"<<endl;
 
     for(int i = 0; i < 10; i++) {
-        if(!istaken[i]) {
-            it->second = i;
+        if(istaken[i] == 0) {
             istaken[i] = 1;
-            if(solve(chars, words, ++it, istaken))
+            chars[*it] = i;
+            it++;
+            if(solve(chars, words, s, it, istaken) == 1) {
                 return 1;
-            --it;
+            }
+            it--;
             istaken[i] = 0;
         }
     }
@@ -53,7 +55,7 @@ int main() {
     words.push_back("money");
     set<char> s;
     map<char, int> chars;
-    map<char, int>::iterator it;
+    set<char>::iterator it;
     for(int i = 0; i < 10; i++)
         istaken.push_back(0);
     cout<<"Entering elements"<<endl;
@@ -66,9 +68,16 @@ int main() {
         }
     }
     cout<<"Elements entered"<<endl;
-    it = chars.begin();
+    it = s.begin();
     cout<<chars.size()<<endl;
-    solve(chars, words, it, istaken);
+    for(auto i = s.begin(); i != s.end(); i++)
+        cout<<*i<<" ";
+    cout<<endl;
+    for(auto i = chars.begin(); i != chars.end(); i++) {
+        cout<<i->first<<" "<<i->second;
+        cout<<endl;
+    }
+    solve(chars, words, s, it, istaken);
 
     return 0;
 }
