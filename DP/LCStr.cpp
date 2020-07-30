@@ -3,28 +3,34 @@
 
 using namespace std;
 
-int solve(string a, string b, vector<vector<int> > &dp, int ans) {
+int _max = -1;
 
-    if(a.length() == 0 || b.length() == 0)
-        return ans;
+int solve(string a, string b, vector<vector<int> > &dp, int i, int j) {
 
-    if(dp[dp.size() - a.length()][dp[0].size() - b.length()] != 0)
-        return dp[dp.size() - a.length()][dp[0].size() - b.length()];
+    if(i == a.length() || j == b.length())
+        return 0;
 
-    if(a[0] == b[0]) {
-        ans = solve(a.substr(1), b.substr(1), dp, ans+1);
+    if(dp[i][j] != -1)
+        return dp[i][j];
+
+    if(a[i] == b[j]) {
+        dp[i][j] = solve(a, b, dp, i+1, j+1) + 1;
+        _max = max(_max, dp[i][j]);
+        return dp[i][j];
     }
-    ans = max(max(solve(a.substr(1), b, dp, 0), solve(a, b.substr(1), dp, 0)), ans);
+    solve(a, b, dp, i+1, j);
+    solve(a, b, dp, i, j+1);    
 
-    dp[dp.size() - a.length()][dp[0].size() - b.length()] = ans;
-    return ans;
+    dp[i][j] = 0;
+    return dp[i][j];
 }
 
 int main() {
 
-    string a = "ABHRDEG", b = "FEWDEGAB";
-    vector<vector<int> > dp(a.length()+1, vector<int>(b.length()+1, 0));
-    cout<<solve(a, b, dp, 0)<<endl;
+    string a = "ABHRDEGD", b = "FEWDEGAB";
+    vector<vector<int> > dp(a.length(), vector<int>(b.length(), -1));
+    solve(a, b, dp, 0, 0);
+    cout<<_max<<endl;
 
     return 0;
 }
