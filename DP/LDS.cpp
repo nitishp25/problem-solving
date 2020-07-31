@@ -3,15 +3,15 @@
 
 using namespace std;
 
-int solve(int arr[], int idx, vector<int> &dp, int* ans) {
-    int res;
-    if(idx == 8)
+int solve(vector<int> arr, int idx, vector<int> &dp, int *ans) {
+    if(idx == arr.size() - 1)
         return 1;
-    if(dp[idx] != 0)
+    if(dp[idx] != 1)
         return dp[idx];
-    for(int i = idx+1; i < 9; i++) {
+    int res;
+    for(int i = idx + 1; i < arr.size(); i++) {
         res = solve(arr, i, dp, ans);
-        if(arr[idx] < arr[i] && res+1 > dp[idx])
+        if(arr[idx] > arr[i] && res + 1 > dp[idx])
             dp[idx] = res + 1;
     }
     if(dp[idx] > *ans)
@@ -21,8 +21,9 @@ int solve(int arr[], int idx, vector<int> &dp, int* ans) {
 
 int main() {
 
-    int arr[] = {100, 22, 9, 33, 21, 50, 41, 60, 80}, ans = 0;
-    vector<int> dp(9, 0);
+    vector<int> arr{1, 4, 2, 43, 21, 5, 3};
+    vector<int> dp(arr.size(), 1);
+    int ans = 0;
     solve(arr, 0, dp, &ans);
     cout<<ans<<endl;
 
