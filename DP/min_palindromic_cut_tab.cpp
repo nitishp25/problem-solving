@@ -18,29 +18,35 @@ void isPalin(string s, vector<vector<int> > &dp) {
                 dp[si][ei] = 1;
         }
     }
-
 }
 
-int solve(string s, int i, int j, vector<vector<int> > &dp, vector<vector<int> > &palin) {
+int solve(string s, vector<vector<int> > &palin) {
 
-    if(palin[i][j])
-        return 0;
-    if(dp[i][j] != 0)
-        return dp[i][j];
-    int ans = INT16_MAX;
-    for(int k = i; k < j; k++)
-        ans = min(ans, 1 + solve(s, i, k, dp, palin) + solve(s, k+1, j, dp, palin));
-    dp[i][j] = ans;
-    return ans;
+    vector<vector<int> > dp(s.length(), vector<int>(s.length(), 0));
+    int ans;
+
+    for(int gap = 1; gap < s.length(); gap++) {
+        for(int si = 0, ei = gap; ei < s.length(); si++, ei++) {
+            if(palin[si][ei] == 1) {
+                dp[si][ei] = 0;
+                continue;
+            }
+            ans = INT16_MAX;
+            for(int k = si; k < ei; k++) {
+                ans = min(ans, 1 + dp[si][k] + dp[k+1][ei]);
+            }
+            dp[si][ei] = ans;
+        }
+    }
+    return dp[0][s.length() - 1];
 }
 
 int main() {
 
     string s = "ababbbabbababa";
     vector<vector<int> > palin(s.length(), vector<int>(s.length(), 0));
-    vector<vector<int> > dp(s.length(), vector<int>(s.length(), 0));
     isPalin(s, palin);
-    cout<<solve(s, 0, s.length() - 1, dp, palin)<<endl;
+    cout<<solve(s, palin)<<endl;
 
     return 0;
 }
