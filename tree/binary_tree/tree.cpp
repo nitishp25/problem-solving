@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stack>
+#include <vector>
 
 using namespace std;
 
@@ -145,6 +146,32 @@ bool find(node *root, int val) {
 
 }
 
+vector<int> root_to_node(node *root, int val) {
+
+    if(root == NULL)
+        return vector<int>();
+
+    if(root->data == val) {
+        vector<int> path;
+        path.insert(path.begin(), val);
+        return path;
+    }
+
+    vector<int> left = root_to_node(root->left, val);
+    if(left.size() != 0) {
+        left.insert(left.begin(), root->data);
+        return left;
+    }
+
+    vector<int> right = root_to_node(root->right, val);
+    if(right.size() != 0) {
+        right.insert(left.begin(), root->data);
+        return right;
+    }
+
+    return vector<int>();
+}
+
 void display(node* root) {
 
     if(root == NULL)
@@ -161,8 +188,10 @@ int main() {
 
     int arr[] = {1, 2, 3, 4, 5};
     node *root = create_2(arr, 5);
-    cout<<height(root)<<" "<<size(root)<<endl;
-    cout<<find(root, 3)<<" "<<find(root, 6)<<endl;
+    vector<int> path = root_to_node(root, 5);
+    for(int i = 0; i < path.size(); i++)
+        cout<<path[i]<<" ";
+    cout<<endl;
 
     return 0;
 }
