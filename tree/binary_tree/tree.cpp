@@ -172,6 +172,60 @@ vector<int> root_to_node(node *root, int val) {
     return vector<int>();
 }
 
+int LCA(node* root, int a, int b) {
+
+    vector<int> path1 = root_to_node(root, a);
+    vector<int> path2 = root_to_node(root, b);
+
+    if(path1.size() == 0 || path2.size() == 0)
+        return -1;
+
+    int ans;
+
+    for(int i = 0; i < path1.size() && i < path2.size(); i++) {
+        if(path1[i] == path2[i])
+            ans = path1[i];
+        else
+            break;
+    }
+    return ans;
+}
+
+void k_down(node *root, int k) {
+
+    if(root == NULL || k == 0) {
+        if(k == 0 && root != NULL)
+            cout<<root->data<<" ";
+        return;
+    }
+
+    k_down(root->left, k-1);
+    k_down(root->right, k-1);
+}
+
+void k_down_(node *root, node *prev, int k) {
+
+    if(root == NULL || k == 0) {
+        if(k == 0 && root != NULL)
+            cout<<root->data<<" ";
+        return;
+    }
+
+    if(root->left != prev)
+        k_down(root->left, k-1);
+    if(root->right != prev)
+        k_down(root->right, k-1);
+}
+
+/*
+void k_away(node *root, node *target, int k) {
+
+    vector<int> path = root_to_node(root, target->data);
+
+
+}
+*/
+
 void display(node* root) {
 
     if(root == NULL)
@@ -188,10 +242,8 @@ int main() {
 
     int arr[] = {1, 2, 3, 4, 5};
     node *root = create_2(arr, 5);
-    vector<int> path = root_to_node(root, 5);
-    for(int i = 0; i < path.size(); i++)
-        cout<<path[i]<<" ";
-    cout<<endl;
+
+    k_down(root, 3);
 
     return 0;
 }
