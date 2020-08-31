@@ -1,6 +1,4 @@
-#include <iostream>
-#include <stack>
-#include <vector>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -146,36 +144,36 @@ bool find(node *root, int val) {
 
 }
 
-vector<int> root_to_node(node *root, int val) {
+vector<node*> root_to_node(node *root, int val) {
 
     if(root == NULL)
-        return vector<int>();
+        return vector<node*>();
 
     if(root->data == val) {
-        vector<int> path;
-        path.insert(path.begin(), val);
+        vector<node*> path;
+        path.insert(path.begin(), root);
         return path;
     }
 
-    vector<int> left = root_to_node(root->left, val);
+    vector<node*> left = root_to_node(root->left, val);
     if(left.size() != 0) {
-        left.insert(left.begin(), root->data);
+        left.insert(left.begin(), root);
         return left;
     }
 
-    vector<int> right = root_to_node(root->right, val);
+    vector<node*> right = root_to_node(root->right, val);
     if(right.size() != 0) {
-        right.insert(left.begin(), root->data);
+        right.insert(right.begin(), root);
         return right;
     }
 
-    return vector<int>();
+    return vector<node*>();
 }
 
 int LCA(node* root, int a, int b) {
 
-    vector<int> path1 = root_to_node(root, a);
-    vector<int> path2 = root_to_node(root, b);
+    vector<node*> path1 = root_to_node(root, a);
+    vector<node*> path2 = root_to_node(root, b);
 
     if(path1.size() == 0 || path2.size() == 0)
         return -1;
@@ -184,7 +182,7 @@ int LCA(node* root, int a, int b) {
 
     for(int i = 0; i < path1.size() && i < path2.size(); i++) {
         if(path1[i] == path2[i])
-            ans = path1[i];
+            ans = path1[i]->data;
         else
             break;
     }
@@ -205,7 +203,7 @@ void k_down(node *root, int k) {
 
 void k_down_(node *root, node *prev, int k) {
 
-    if(root == NULL || k == 0) {
+    if(root == NULL || k <= 0) {
         if(k == 0 && root != NULL)
             cout<<root->data<<" ";
         return;
@@ -217,14 +215,73 @@ void k_down_(node *root, node *prev, int k) {
         k_down(root->right, k-1);
 }
 
-/*
 void k_away(node *root, node *target, int k) {
 
-    vector<int> path = root_to_node(root, target->data);
+    vector<node*> path = root_to_node(root, target->data);
+    reverse(path.begin(), path.end());
+    node *prev = NULL;
 
-
+    for(int i = 0; i <= k; i++) {
+        k_down_(path[i], prev, k - i);
+        prev = path[i];
+    }
 }
-*/
+
+int diameter(node *root) {
+
+    if(root == NULL)
+        return 0;
+
+    int lh = height(root->left);
+    int rh = height(root->right);
+    int ld = diameter(root->left);
+    int rd = diameter(root->right);
+
+    return max(max(ld, rd), lh + rh + 1);
+}
+
+int diameter2(node *root, int &dia) {
+
+    if(root == NULL)
+        return 0;
+
+    int lh = diameter2(root->left, dia);
+    int rh = diameter2(root->right, dia);
+
+    dia = max(dia, lh + rh + 1);
+
+    return max(lh, rh) + 1;
+}
+
+int leaftoleaf(node *root, int &max_sum) {
+
+    if(root == NULL)
+        return 0;
+
+    int ls = leaftoleaf(root->left, max_sum);
+    int rs = leaftoleaf(root->right, max_sum);
+
+    max_sum = max(max_sum, ls + rs + root->data);
+
+    return max(ls, rs) + root->data;
+}
+
+bool isPathSum(node *root, int sum) {
+
+    if(root == NULL)
+        return false;
+
+    if(root->left == NULL && root->right == NULL) {
+        if(sum - root->data == 0)
+            return true;
+        return false;
+    }
+
+    bool l = isPathSum(root->left, sum - root->data);
+    bool r = isPathSum(root->right, sum - root->data);
+
+    return false || l || r; 
+}
 
 void display(node* root) {
 
@@ -243,7 +300,9 @@ int main() {
     int arr[] = {1, 2, 3, 4, 5};
     node *root = create_2(arr, 5);
 
-    k_down(root, 3);
+    int max_sum = INT8_MIN;
+    leaftoleaf(root, max_sum);
+    cout<<max_sum<<endl;
 
     return 0;
 }
