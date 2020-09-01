@@ -283,6 +283,61 @@ bool isPathSum(node *root, int sum) {
     return false || l || r; 
 }
 
+vector<float> LevelAvg(node *root) {
+
+    queue<node*> q;
+    vector<float> ans;
+    q.push(root);
+
+    while(!q.empty()) {
+        int s = q.size();
+        int size = s;
+        int sum = 0;
+        while(size-- > 0) {
+            node* top = q.front();
+            q.pop();
+            sum += top->data;
+            if(top->left != NULL)
+                q.push(top->left);
+            if(top->right != NULL)
+                q.push(top->right);
+        }
+        ans.push_back(sum/s);
+    }
+    return ans;
+}
+
+bool isCousin(node *root, int a, int b) {
+
+    queue<node*> q;
+    q.push(root);
+    int l1 = 0, l2 = 0;
+    int level = 1;
+
+    while(!q.empty()) {
+        int size = q.size();
+        while(size-- > 0) {
+            node* front = q.front();
+            q.pop();
+
+            if(front->data == a)
+                l1 = level;
+            if(front->data == b)
+                l2 = level;
+            if(front->left != NULL && front->right != NULL && ((front->left->data == a && front->right->data == b) || (front->left->data == b && front->right->data == a)))
+                return false;
+            if(front->left != NULL)
+                q.push(front->left);
+            if(front->right != NULL)
+                q.push(front->right);
+        }
+        level++;
+        if(l1 != 0 || l2 != 0)
+            return l1 == l2;
+    }
+    return true;
+}
+
 void display(node* root) {
 
     if(root == NULL)
