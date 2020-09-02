@@ -338,6 +338,34 @@ bool isCousin(node *root, int a, int b) {
     return true;
 }
 
+void inorder(node *root) {
+
+    if(root == NULL)
+        return;
+    inorder(root->left);
+    cout<<root->data<<" ";
+    inorder(root->right);
+}
+
+void preorder(node *root) {
+
+    if(root == NULL)
+        return;
+    cout<<root->data<<" ";
+    inorder(root->left);
+    inorder(root->right);
+}
+
+void postorder(node *root) {
+
+    if(root == NULL)
+        return;
+    inorder(root->left);
+    inorder(root->right);
+    cout<<root->data<<" ";
+
+}
+
 void display(node* root) {
 
     if(root == NULL)
