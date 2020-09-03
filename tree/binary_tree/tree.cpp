@@ -352,18 +352,74 @@ void preorder(node *root) {
     if(root == NULL)
         return;
     cout<<root->data<<" ";
-    inorder(root->left);
-    inorder(root->right);
+    preorder(root->left);
+    preorder(root->right);
 }
 
 void postorder(node *root) {
 
     if(root == NULL)
         return;
-    inorder(root->left);
-    inorder(root->right);
+    postorder(root->left);
+    postorder(root->right);
     cout<<root->data<<" ";
 
+}
+
+void levelorder(node *root) {
+
+    queue<node*> q;
+    q.push(root);
+
+    while(!q.empty()) {
+
+        int s = q.size();
+        while(s--) {
+
+            node *front = q.front();
+            q.pop();
+            cout<<front->data<<" ";
+            if(front->left != NULL)
+                q.push(front->left);
+            if(front->right != NULL)
+                q.push(front->right);  
+        }
+        cout<<endl;
+    }
+}
+
+void levelorderzigzag(node *root) {
+
+    stack<node*> curr, next;
+    int lefttoright = 1;
+    curr.push(root);
+
+    while(!curr.empty()) {
+
+        node *top = curr.top();
+        curr.pop();
+        cout<<top->data<<" ";
+
+        if(lefttoright == 1) {
+            if(top->left != NULL)
+                next.push(top->left);
+            if(top->right != NULL)
+                next.push(top->right);
+        }
+        else {
+            if(top->right != NULL)
+                next.push(top->right);
+            if(top->left != NULL)
+                next.push(top->left);
+        }
+        if(curr.empty()) {
+            cout<<endl;
+            stack<node*> temp = curr;
+            curr = next;
+            next = temp;
+            lefttoright = lefttoright == 1 ? 0 : 1;
+        }
+    }
 }
 
 void display(node* root) {
@@ -380,12 +436,10 @@ void display(node* root) {
 
 int main() {
 
-    int arr[] = {1, 2, 3, 4, 5};
-    node *root = create_2(arr, 5);
+    int arr[] = {1, 2, 3};
+    node *root = create_2(arr, 3);
 
-    int max_sum = INT8_MIN;
-    leaftoleaf(root, max_sum);
-    cout<<max_sum<<endl;
+    levelorderzigzag(root);
 
     return 0;
 }
