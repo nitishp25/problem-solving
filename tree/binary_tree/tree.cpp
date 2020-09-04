@@ -422,6 +422,42 @@ void levelorderzigzag(node *root) {
     }
 }
 
+void Floor(node *root, int n, int &floor) {
+
+    if(root == NULL)
+        return;
+
+    if(root->data < n)
+        floor = max(floor, root->data);
+
+    Floor(root->left, n, floor);
+    Floor(root->right, n, floor);
+}
+
+void Ciel(node *root, int n, int &ciel) {
+
+    if(root == NULL)
+        return;
+
+    if(root->data > n)
+        ciel = min(ciel, root->data);
+
+    Ciel(root->left, n, ciel);
+    Ciel(root->right, n, ciel);
+}
+
+int kth_largest(node *root, int k) {
+
+    int n = INT8_MAX, floor;
+
+    for(int i = 0; i < k; i++) {
+        floor = INT8_MIN;
+        Floor(root, n, floor);
+        n = floor;
+    }
+    return n;
+}
+
 void display(node* root) {
 
     if(root == NULL)
@@ -436,10 +472,10 @@ void display(node* root) {
 
 int main() {
 
-    int arr[] = {1, 2, 3};
-    node *root = create_2(arr, 3);
+    int arr[] = {1, 2, 3, 4, 5};
+    node *root = create_2(arr, 5);
 
-    levelorderzigzag(root);
+    cout<<kth_largest(root, 2)<<endl;
 
     return 0;
 }
