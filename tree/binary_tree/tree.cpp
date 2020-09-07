@@ -458,6 +458,67 @@ int kth_largest(node *root, int k) {
     return n;
 }
 
+void leaves(node *root, vector<int> &leaves_) {
+
+    if(root == NULL)
+        return;
+
+    if(root->left == NULL && root->right == NULL)
+        leaves_.push_back(root->data);
+
+    leaves(root->left, leaves_);
+    leaves(root->right, leaves_);
+}
+
+bool leaf_similar(node *root1, node *root2) {
+
+    vector<int> leaf1, leaf2;
+    leaves(root1, leaf1);
+    leaves(root2, leaf2);
+
+    return leaf1 == leaf2;
+}
+
+bool isSameShape(node *root1, node *root2) {
+
+    if(root1 == NULL && root2 == NULL)
+        return true;
+    if((root1 == NULL && root2 != NULL) || root1 != NULL && root2 == NULL)
+        return false;
+
+    return isSameShape(root1->left, root2->left) && isSameShape(root1->right, root2->right);
+}
+
+bool isMirrorShape(node *root1, node *root2) {
+
+    if(root1 == NULL && root2 == NULL)
+        return true;
+    if((root1 == NULL && root2 != NULL) || root1 != NULL && root2 == NULL)
+        return false;
+
+    return isMirrorShape(root1->left, root2->right) && isMirrorShape(root1->right, root2->left);  
+
+}
+
+bool isSymmetric(node *root) {
+
+    return isMirrorShape(root, root);
+
+}
+
+node* mirrorTree(node *root) {
+
+    if(root == NULL)
+        return NULL;
+
+    node *left = mirrorTree(root->left);
+    node *right = mirrorTree(root->right);
+
+    root->left = right;
+    root->right = left;
+    return root;
+}
+
 void display(node* root) {
 
     if(root == NULL)
@@ -473,9 +534,12 @@ void display(node* root) {
 int main() {
 
     int arr[] = {1, 2, 3, 4, 5};
+    int arr2[] = {7, 8, 9};
     node *root = create_2(arr, 5);
+    // node *root2 = create_2(arr2, 3);
 
-    cout<<kth_largest(root, 2)<<endl;
+    node *root2 = mirrorTree(root);
+    display(root2);
 
     return 0;
 }
