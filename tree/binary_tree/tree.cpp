@@ -519,6 +519,32 @@ node* mirrorTree(node *root) {
     return root;
 }
 
+node* removeLeaves(node* root) {
+
+    if(root == NULL)
+        return NULL;
+
+    if(root->left == NULL && root->right == NULL)
+        return NULL;
+
+    root->left = removeLeaves(root->left);
+    root->right = removeLeaves(root->right);
+
+    return root;
+}
+
+int isBalanced(node *root, bool &ans) {
+
+    if(root == NULL)
+        return 0;
+    int l = isBalanced(root->left, ans);
+    int r = isBalanced(root->right, ans);
+
+    if(abs(l-r) > 1)
+        ans = false;
+    return max(l, r) + 1;
+}
+
 void display(node* root) {
 
     if(root == NULL)
@@ -538,8 +564,10 @@ int main() {
     node *root = create_2(arr, 5);
     // node *root2 = create_2(arr2, 3);
 
-    node *root2 = mirrorTree(root);
+    node *root2 = removeLeaves(root);
     display(root2);
-
+    bool ans = true;
+    isBalanced(root, ans);
+    cout<<ans<<endl;
     return 0;
 }
