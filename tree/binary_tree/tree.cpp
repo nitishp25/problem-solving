@@ -545,6 +545,35 @@ int isBalanced(node *root, bool &ans) {
     return max(l, r) + 1;
 }
 
+void flatten(node *root) {
+
+    if(root == NULL)
+        return;
+
+    flatten(root->left);
+    flatten(root->right);
+    node *temp = root->right;
+    root->right = root->left;
+    root->left = NULL;
+    while(root->right != NULL) {
+        root = root->right;
+    }
+    root->right = temp;
+}
+
+node* merge(node* root1, node* root2) {
+
+    if(root1 == NULL)
+        return root2;
+    if(root2 == NULL)
+        return root1;
+
+    node* root = new node(root1->data + root2->data);
+    root->left = merge(root1->left, root2->left);
+    root->right = merge(root1->right, root2->right);
+    return root;
+}
+
 void display(node* root) {
 
     if(root == NULL)
@@ -559,15 +588,22 @@ void display(node* root) {
 
 int main() {
 
-    int arr[] = {1, 2, 3, 4, 5};
-    int arr2[] = {7, 8, 9};
-    node *root = create_2(arr, 5);
-    // node *root2 = create_2(arr2, 3);
+    node* root = new node(1); 
+    root->left = new node(2); 
+    root->right = new node(3); 
+    root->left->left = new node(4);
+    root->left->right = new node(5);
+    root->right->right = new node(6);
 
-    node *root2 = removeLeaves(root);
-    display(root2);
-    bool ans = true;
-    isBalanced(root, ans);
-    cout<<ans<<endl;
+    node* root2 = new node(4); 
+    root2->left = new node(1); 
+    root2->right = new node(7); 
+    root2->left->left = new node(3);
+    root2->right->left = new node(2);
+    root2->right->right = new node(6);
+
+    node* root3 = merge(root, root2);
+    inorder(root3);
+
     return 0;
 }
