@@ -574,6 +574,38 @@ node* merge(node* root1, node* root2) {
     return root;
 }
 
+node* pre_in_construct(int pre[], int in[], int si, int ei, int &idx) {
+
+    if(si > ei)
+        return NULL;
+    node* root = new node(pre[idx]);
+    int i;
+    for(i = si; i <= ei; i++) {
+        if(pre[idx] == in[i])
+            break;
+    }
+    idx++;
+    root->left = pre_in_construct(pre, in, si, i-1, idx);
+    root->right = pre_in_construct(pre, in, i+1, ei, idx);
+    return root;
+}
+
+node* post_in_construct(int post[], int in[], int si, int ei, int &idx) {
+
+    if(si > ei)
+        return NULL;
+    node* root = new node(post[idx]);
+    int i;
+    for(i = si; i <= ei; i++) {
+        if(post[idx] == in[i])
+            break;
+    }
+    idx--;
+    root->right = post_in_construct(post, in, i+1, ei, idx);
+    root->left = post_in_construct(post, in, si, i-1, idx);
+    return root;
+}
+
 void display(node* root) {
 
     if(root == NULL)
@@ -588,22 +620,12 @@ void display(node* root) {
 
 int main() {
 
-    node* root = new node(1); 
-    root->left = new node(2); 
-    root->right = new node(3); 
-    root->left->left = new node(4);
-    root->left->right = new node(5);
-    root->right->right = new node(6);
-
-    node* root2 = new node(4); 
-    root2->left = new node(1); 
-    root2->right = new node(7); 
-    root2->left->left = new node(3);
-    root2->right->left = new node(2);
-    root2->right->right = new node(6);
-
-    node* root3 = merge(root, root2);
-    inorder(root3);
+    int post[] = {8, 4, 5, 2, 6, 7, 3, 1};
+    int in[] = {4, 8, 2, 5, 1, 6, 3, 7};
+    int idx = 7;
+    node* root = post_in_construct(post, in, 0, 7, idx);
+    inorder(root);
+    cout<<"\n";
 
     return 0;
 }
