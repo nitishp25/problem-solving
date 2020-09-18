@@ -606,6 +606,54 @@ node* post_in_construct(int post[], int in[], int si, int ei, int &idx) {
     return root;
 }
 
+void left_side_view(node* root) {
+
+    if(root == NULL)
+        return;
+    queue<node*> q;
+    q.push(root);
+    while(!q.empty()) {
+        int s = q.size();
+        int i = 0;
+        while(i < s) {
+            node* front = q.front();
+            q.pop();
+            if(i == 0) {
+                cout<<front->data<<endl;
+            }
+            if(front->left != NULL)
+                q.push(front->left);
+            if(front->right != NULL)
+                q.push(front->right);
+            i++;
+        }
+    }
+}
+
+void right_side_view(node* root) {
+
+    if(root == NULL)
+        return;
+    queue<node*> q;
+    q.push(root);
+    while(!q.empty()) {
+        int s = q.size();
+        int i = 0;
+        while(i < s) {
+            node* front = q.front();
+            q.pop();
+            if(i == 0) {
+                cout<<front->data<<endl;
+            }
+            if(front->right != NULL)
+                q.push(front->right);
+            if(front->left != NULL)
+                q.push(front->left);
+            i++;
+        }
+    }
+}
+
 void display(node* root) {
 
     if(root == NULL)
@@ -624,8 +672,9 @@ int main() {
     int in[] = {4, 8, 2, 5, 1, 6, 3, 7};
     int idx = 7;
     node* root = post_in_construct(post, in, 0, 7, idx);
-    inorder(root);
+    left_side_view(root);
     cout<<"\n";
+    right_side_view(root);
 
     return 0;
 }
