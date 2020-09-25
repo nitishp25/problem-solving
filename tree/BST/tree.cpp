@@ -62,6 +62,38 @@ node* search(node* root, int val) {
         return search(root->left, val);
 }
 
+node* add(node *root, int val) {
+
+    if(root == NULL) {
+        node* new_node = new node(val);
+        return new_node;
+    }
+    if(val > root->data)
+        root->right = add(root->right, val);
+    else
+        root->left = add(root->left, val);
+    return root;
+}
+
+node* remove_node(node* root, int val) {
+
+    if(root == NULL)
+        return NULL;
+    if(root->data == val) {
+        if(root->left == NULL)
+            return root->right;
+        else if(root->right == NULL)
+            return root->left;
+        root->data = find_min(root->right)->data;
+        root->right = remove_node(root->right, root->data);
+    }
+    else if(val > root->data)
+        root->right = remove_node(root->right, val);
+    else
+        root->left = remove_node(root->left, val);
+    return root;
+}
+
 void display(node* root) {
 
     if(root == NULL)
