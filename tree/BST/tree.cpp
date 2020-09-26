@@ -94,6 +94,56 @@ node* remove_node(node* root, int val) {
     return root;
 }
 
+int ceil(node *root, int val) {
+
+    if(root == NULL)
+        return -1;
+    if(root->data == val)
+        return root->data;
+    if(root->data < val) {
+        return ceil(root->right, val);
+    }
+    int c = ceil(root->left, val);
+    if(c < val)
+        c = root->data;
+    return c;
+}
+
+int floor(node *root, int val) {
+
+    if(root == NULL)
+        return -1;
+    if(root->data == val)
+        return root->data;
+    if(root->data > val) {
+        return floor(root->left, val);
+    }
+    int f = floor(root->right, val);
+    if(f > val)
+        f = root->data;
+    return f;
+}
+
+bool isBST(node *root, int min_, int max_) {
+
+    if(root == NULL)
+        return true;
+    if(root->data <= min_ || root->data >= max_)
+        return false;
+    return isBST(root->left, min_, root->data) && isBST(root->right, root->data, max_);
+}
+
+node* LCA(node* root, node* root1, node* root2) {
+    if(root == NULL)
+        return NULL;
+
+    if(root->data > root1->data && root->data > root2->data)
+        return LCA(root->left, root1, root2);
+    if(root->data < root1->data && root->data < root2->data)
+        return LCA(root->right, root1, root2);
+    return root;
+}
+
 void display(node* root) {
 
     if(root == NULL)
