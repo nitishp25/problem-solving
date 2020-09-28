@@ -133,15 +133,36 @@ bool isBST(node *root, int min_, int max_) {
     return isBST(root->left, min_, root->data) && isBST(root->right, root->data, max_);
 }
 
-node* LCA(node* root, node* root1, node* root2) {
+node* LCA(node* root, int root1, int root2) {
     if(root == NULL)
         return NULL;
 
-    if(root->data > root1->data && root->data > root2->data)
+    if(root->data > root1 && root->data > root2)
         return LCA(root->left, root1, root2);
-    if(root->data < root1->data && root->data < root2->data)
+    if(root->data < root1 && root->data < root2)
         return LCA(root->right, root1, root2);
     return root;
+}
+
+node* head = NULL;
+node* tail = NULL;
+
+void flatten(node* root) {
+
+    if(root == NULL)
+        return;
+    flatten(root->left);
+    if(head == NULL) {
+        head = root;
+        tail = root;
+        root->left = NULL;
+    }
+    else {
+        tail->right = root;
+        root->left = NULL;
+        tail = root;
+    }
+    flatten(root->right);
 }
 
 void display(node* root) {
@@ -157,9 +178,7 @@ int main() {
 
     int arr[] = {1, 2, 3, 4, 5, 6, 7};
     node* root = create(arr, 0, 6);
-    cout<<find_max(root)->data<<endl;
-    cout<<find_min(root)->data<<endl;
-    cout<<search(root, 3)->data<<endl;
-    // cout<<search(root, 9)->data<<endl;
+    flatten(root);
+    display(head);
     return 0;
 }
