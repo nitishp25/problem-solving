@@ -165,6 +165,27 @@ void flatten(node* root) {
     flatten(root->right);
 }
 
+node* flatten_2(node* root) {
+
+    if(root == NULL)
+        return NULL;
+    node *left = flatten_2(root->left);
+    node* curr = left;
+    if(curr != NULL) {
+        while(curr->right != NULL) {
+            curr = curr->right;
+        }
+        curr->right = root;
+        root->left = NULL;
+        root->right = flatten_2(root->right);
+        return left;
+    }
+    else {
+        root->right = flatten_2(root->right);
+        return root;
+    }
+}
+
 void display(node* root) {
 
     if(root == NULL)
@@ -178,7 +199,7 @@ int main() {
 
     int arr[] = {1, 2, 3, 4, 5, 6, 7};
     node* root = create(arr, 0, 6);
-    flatten(root);
-    display(head);
+    node* new_node = flatten_2(root);
+    display(new_node);
     return 0;
 }
