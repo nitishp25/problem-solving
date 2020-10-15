@@ -23,6 +23,34 @@ node* create_tree(vector<int> arr, int idx) {
     return root;
 }
 
+int max_value(node *root) {
+    int _max = root->data;
+    for(node* child : root->children)
+        _max = max(_max, max_value(child));
+    return _max;
+}
+
+int min_value(node *root) {
+    int _min = root->data;
+    for(node* child : root->children)
+        _min = min(_min, min_value(child));
+    return _min;
+}
+
+int size(node* root) {
+    int s = 0;
+    for(node* child : root->children)
+        s += size(child);
+    return s+1;
+}
+
+int height(node* root) {
+    int h = 0;
+    for(node* child : root->children)
+        h = max(h, height(child));
+    return h+1;
+}
+
 void display(node* root) {
     if(root == NULL)
         return;
@@ -48,7 +76,10 @@ int main() {
     arr.push_back(4);
     arr.push_back(5);
     node* root = create_tree(arr, 0);
-    display(root);
+    cout<<min_value(root)<<"\n";
+    cout<<max_value(root)<<"\n";
+    cout<<height(root)<<"\n";
+    cout<<size(root)<<"\n";
 
     return 0;
 }
