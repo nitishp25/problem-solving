@@ -12,19 +12,14 @@ class node {
     }
 };
 
-int idx = 0;
+node* create_tree(vector<int> arr, int idx) {
 
-node* create_tree(vector<int> arr) {
-
-    if(idx >= arr.size()) {
-        return NULL;
-    }
     node* root = new node(arr[idx]);
-    idx++;
-    while(idx < arr.size()) {
-        root->children.push_back(create_tree(arr));
+    int i = idx+1;
+    while(i < arr.size()) {
+        root->children.push_back(create_tree(arr, idx+1));
+        i++;
     }
-    idx++;
     return root;
 }
 
@@ -52,7 +47,7 @@ int main() {
     arr.push_back(3);
     arr.push_back(4);
     arr.push_back(5);
-    node* root = create_tree(arr);
+    node* root = create_tree(arr, 0);
     display(root);
 
     return 0;
