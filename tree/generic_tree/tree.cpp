@@ -51,6 +51,33 @@ int height(node* root) {
     return h+1;
 }
 
+bool search(node* root, int val) {
+    bool f = false;
+    if(root->data == val)
+        return true;
+    for(node* child : root->children)
+        f = f || search(child, val);
+    return f;
+}
+
+vector<node*> root_to_node(node* root, int val) {
+    if(root == NULL)
+        return vector<node*>();
+    if(root->data == val) {
+        vector<node*> path;
+        path.insert(path.begin(), root);
+        return path;
+    }
+    for(node* child : root->children) {
+        vector<node*> path = root_to_node(child, val);
+        if(path.size() > 0) {
+            path.insert(path.begin(), root);
+            return path;
+        }
+    }
+    return vector<node*>();
+}
+
 void display(node* root) {
     if(root == NULL)
         return;
