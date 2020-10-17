@@ -78,6 +78,53 @@ vector<node*> root_to_node(node* root, int val) {
     return vector<node*>();
 }
 
+node* LCA(node* root, int n1, int n2) {
+    vector<node*> path1 = root_to_node(root, n1);
+    vector<node*> path2 = root_to_node(root, n2);
+    if(path1.size() == 0 || path2.size() == 0)
+        return NULL;
+    int i = 0, j = 0;
+    while(i < path1.size() && j < path2.size()) {
+        if(path1[i]->data != path2[j]->data)
+            return path1[i-1];
+        i++;
+        j++;
+    }
+    return path1[i-1];
+}
+
+void k_down(node* root, int k) {
+    if(k == 0) {
+        cout<<root->data<<"\n";
+        return;
+    }
+    for(node* child : root->children)
+        k_down(child, k-1);
+}
+
+void k_down_(node* root, node* prev, int k) {
+    if(k == 0) {
+        cout<<root->data<<"\n";
+        return;
+    }
+    for(node* child : root->children) {
+        if(child != prev)
+            k_down_(child, prev, k-1);
+    }
+}
+
+void k_away(node* root, node* target, int k) {
+    vector<node*> path = root_to_node(root, target->data);
+    reverse(path.begin(), path.end());
+    node* prev = NULL;
+    for(int i = 0; i < path.size(); i++) {
+        if(k-i >= 0) {
+            k_down_(path[i], prev, k-i);
+            prev = path[i];
+        }
+    }
+}
+
 void display(node* root) {
     if(root == NULL)
         return;
@@ -103,10 +150,11 @@ int main() {
     arr.push_back(4);
     arr.push_back(5);
     node* root = create_tree(arr, 0);
-    cout<<min_value(root)<<"\n";
-    cout<<max_value(root)<<"\n";
-    cout<<height(root)<<"\n";
-    cout<<size(root)<<"\n";
+    cout<<search(root, 4)<<"\n";
+    cout<<search(root, 6)<<"\n";
+    vector<node*> path = root_to_node(root, 5);
+    for(node* n : path)
+        cout<<n->data<<" ";
 
     return 0;
 }
