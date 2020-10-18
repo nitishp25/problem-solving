@@ -125,6 +125,73 @@ void k_away(node* root, node* target, int k) {
     }
 }
 
+int diameter(node* root) {
+    int h1 = 0, h2 = 0;
+    for(node* child : root->children) {
+        int h = height(child);
+        if(h > h1) {
+            h2 = h1;
+            h1 = h;
+        }
+        else if(h > h2)
+            h2 = h;
+    }
+    int d = 0;
+    for(node* child : root->children)
+        d = max(d, diameter(child));
+    d = max(d, h1 + h2 + 1);
+}
+
+int dia = 0;
+
+int _diameter(node* root) {
+    int h1 = 0, h2 = 0;
+    for(node* child : root->children) {
+        int h = _diameter(child);
+        if(h > h1) {
+            h2 = h1;
+            h1 = h;
+        }
+        else if(h > h2)
+            h2 = h;
+    }
+    dia = max(dia, h1 + h2 + 1);
+    return max(h1, h2) + 1;
+}
+
+int leaves(node* root) {
+    int l = 0;
+    /* for(node* child : root->children) {
+        if(child->children.size() == 0)
+            l++;
+    } */
+    if(root->children.size() == 0)
+        return 1;
+    for(node* child : root->children) {
+        l += leaves(child);
+    }
+    return l;
+}
+
+int f = INT_MIN;
+
+void floor(node* root, int val) {
+    if(root->data < val && root->data > f)
+        f = root->data;
+    for(node* child : root->children)
+        floor(child, val);
+}
+
+int kth_largest(node* root, int k) {
+    int ans = INT_MAX;
+    for(int i = 0; i < k; i++) {
+        floor(root, ans);
+        ans = f;
+        f = INT_MIN;
+    }
+    return ans;
+}
+
 void display(node* root) {
     if(root == NULL)
         return;
@@ -150,11 +217,7 @@ int main() {
     arr.push_back(4);
     arr.push_back(5);
     node* root = create_tree(arr, 0);
-    cout<<search(root, 4)<<"\n";
-    cout<<search(root, 6)<<"\n";
-    vector<node*> path = root_to_node(root, 5);
-    for(node* n : path)
-        cout<<n->data<<" ";
+    cout<<leaves(root)<<"\n";
 
     return 0;
 }
