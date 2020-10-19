@@ -192,6 +192,105 @@ int kth_largest(node* root, int k) {
     return ans;
 }
 
+void levelorder(node* root) {
+    queue<node*> que;
+    que.push(root);
+    while(que.size() != 0) {
+        node* n = que.front();
+        que.pop();
+        cout<<n->data<<" ";
+        for(node* child : n->children)
+            que.push(child);
+    }
+}
+
+void levelorder_newline(node* root) {
+    queue<node*> que;
+    que.push(root);
+    int size;
+    while(que.size() != 0) {
+        size = que.size();
+        while(size--) {
+            node* n = que.front();
+            que.pop();
+            cout<<n->data<<" ";
+            for(node* child : n->children)
+                que.push(child);
+        }
+        cout<<"\n";
+    }
+}
+
+void levelorder_zigzag(node* root) {
+    stack<node*> s1;
+    stack<node*> s2;
+    bool l = true;
+    s1.push(root);
+    while(!s1.empty()) {
+        node* n = s1.top();
+        s1.pop();
+        cout<<n->data<<" ";
+        if(l) 
+            for(node* child:n->children)
+                s2.push(child);
+        else
+            for(int i = n->children.size()-1; i>=0; i--)
+                s2.push(n->children[i]);
+        if(s1.empty()) {
+            cout<<"\n";
+            l = !l;
+            stack<node*> t = s1;
+            s1 = s2;
+            s2 = t;
+        }
+    }
+}
+
+bool isSameShape(node* root1, node* root2) {
+    if(root1->children.size() != root2->children.size())
+        return false;
+    bool ans = true;
+    for(int i = 0; i < root1->children.size(); i++)
+        ans = ans && isSameShape(root1->children[i], root2->children[i]);
+    return ans;
+}
+
+bool isMirrorShape(node* root1, node* root2) {
+    if(root1->children.size() != root2->children.size())
+        return false;
+    bool ans = true;
+    int i = 0, j = root1->children.size() - 1;
+    while(i < root1->children.size() - 1 && j >= 0) {
+        ans = ans && isMirrorShape(root1->children[i], root2->children[j]);
+        i++;
+        j--;
+    }
+    return ans;
+}
+
+bool isSymmetric(node* root1, node* root2) {
+    return isMirrorShape(root1, root2);
+}
+
+bool isSymmetricWithValue(node* root1, node* root2) {
+    if(root1->children.size() != root2->children.size() || root1->data != root2->data)
+        return false;
+    bool ans = true;
+    int i = 0, j = root1->children.size() - 1;
+    while(i < root1->children.size() - 1 && j >= 0) {
+        ans = ans && isSymmetricWithValue(root1->children[i], root2->children[j]);
+        i++;
+        j--;
+    }
+    return ans;
+}
+
+void mirrorTree(node* root) {
+    for(node* child : root->children)
+        mirrorTree(child);
+    reverse(root->children.begin(), root->children.end());
+}
+
 void display(node* root) {
     if(root == NULL)
         return;
@@ -217,7 +316,12 @@ int main() {
     arr.push_back(4);
     arr.push_back(5);
     node* root = create_tree(arr, 0);
-    cout<<leaves(root)<<"\n";
+    cout<<isSameShape(root, root)<<"\n";
+    cout<<isMirrorShape(root, root)<<"\n";
+    cout<<isSymmetric(root, root)<<"\n";
+    cout<<isSymmetricWithValue(root, root)<<"\n";
+    mirrorTree(root);
+    display(root);
 
     return 0;
 }
