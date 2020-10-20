@@ -291,6 +291,31 @@ void mirrorTree(node* root) {
     reverse(root->children.begin(), root->children.end());
 }
 
+void remove_leaves(node* root) {
+    for(int i = root->children.size() - 1; i >= 0; i--) {
+        if(root->children[i]->children.size() == 0)
+            root->children.resize(root->children.size() - 1);
+    }
+    for(node* child : root->children)
+        remove_leaves(child);
+}
+
+void flatten(node* root) {
+    for(node* child : root->children)
+        flatten(child);
+    int i = root->children.size() - 1;
+    while(i > 0) {
+        node* curr = root->children[i];
+        node* tail = root->children[i-1];
+        root->children.pop_back();
+        while(tail->children.size() == 0) {
+            tail = tail->children[0];
+        }
+        tail->children.push_back(curr);
+        i--;
+    }
+}
+
 void display(node* root) {
     if(root == NULL)
         return;
@@ -316,11 +341,7 @@ int main() {
     arr.push_back(4);
     arr.push_back(5);
     node* root = create_tree(arr, 0);
-    cout<<isSameShape(root, root)<<"\n";
-    cout<<isMirrorShape(root, root)<<"\n";
-    cout<<isSymmetric(root, root)<<"\n";
-    cout<<isSymmetricWithValue(root, root)<<"\n";
-    mirrorTree(root);
+    flatten(root);
     display(root);
 
     return 0;
