@@ -308,7 +308,7 @@ void flatten(node* root) {
         node* curr = root->children[i];
         node* tail = root->children[i-1];
         root->children.pop_back();
-        while(tail->children.size() == 0) {
+        while(tail->children.size() != 0) {
             tail = tail->children[0];
         }
         tail->children.push_back(curr);
