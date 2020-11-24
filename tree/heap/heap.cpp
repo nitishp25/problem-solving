@@ -2,7 +2,10 @@
 
 using namespace std;
 
-void heapify(int arr[], int n, int i) {
+int arr[50];
+int n = -1;
+
+void down_heapify(int i) {
     int largest = i;
     int left = 2*i + 1;
     int right = 2*i + 2;
@@ -13,18 +16,53 @@ void heapify(int arr[], int n, int i) {
 
     if(largest != i) {
         swap(arr[i], arr[largest]);
-        heapify(arr, n, largest);
+        down_heapify(largest);
     }
 }
 
-void heapSort(int arr[], int n) {
+void up_heapify(int i) {
+    int parent = (i-1)/2;
+    if(parent >= 0 && arr[parent] < arr[i]) {
+        swap(arr[parent], arr[i]);
+        up_heapify(parent);
+    }
+}
+
+void insert(int num) {
+    n++;
+    arr[n] = num;
+    up_heapify(n);
+}
+
+void remove_max() {
+    arr[0] = arr[n];
+    n--;
+    down_heapify(0);
+}
+
+void remove(int i) {
+    arr[i] = arr[0] + 1;
+    up_heapify(i);
+    remove_max();
+}
+
+void change_priority(int p, int i) {
+    int old_p = arr[i];
+    arr[i] = p;
+    if(p > old_p)
+        up_heapify(i);
+    else if(p < old_p)
+        down_heapify(i);
+}
+
+void heapSort(int arr[]) {
 
     for(int i = n - 1; i >= 0; i--)
-        heapify(arr, n, i);
+        down_heapify(i);
 
     for(int i = n-1; i > 0; i--) {
         swap(arr[0], arr[i]);
-        heapify(arr, i, 0);
+        down_heapify(0);
     }
 }
 
@@ -36,8 +74,7 @@ void printArray(int arr[], int n) {
 
 int main() {
 
-    int arr[] = {12, 11, 13, 5, 6, 7}; 
-    int n = sizeof(arr)/sizeof(arr[0]); 
+
   
     heapSort(arr, n); 
   
