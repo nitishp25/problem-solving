@@ -76,7 +76,7 @@ int main() {
 
 
   
-    heapSort(arr, n); 
+    heapSort(arr); 
   
     cout << "Sorted array is \n"; 
     printArray(arr, n); 
