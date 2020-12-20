@@ -11,7 +11,7 @@ class Graph {
     vector<vector<int>> adj;
 
     Graph(int s) {
-        size = size;
+        size = s;
         adj = vector<vector<int>>(s);
     }
 
@@ -21,7 +21,40 @@ class Graph {
     }
 
     void removeEdge(int v1, int v2) {
+        vector<int>::iterator i, j;
+        for(i = adj[v1].begin(); i != adj[v1].end(); i++) {
+            if(*i == v2)
+                break;
+        }
+        adj[v1].erase(i);
+        for(j = adj[v2].begin(); j != adj[v2].end(); j++) {
+            if(*j == v1)
+                break;
+        }
+        adj[v2].erase(j);
+    }
 
+    void removeVertex(int v) {
+        for(int i : adj[v]) {
+            removeEdge(i, v);
+        }
+        size--;
+    }
+
+    bool hasPath(int v1, int v2, vector<bool> &visited, string path) {
+        visited[v1] = true;
+        if(v1 == v2) {
+            path.append(to_string(v1));
+            cout<<path<<endl;
+            return true;
+        }
+        for(int i : adj[v1]) {
+            if(!visited[i]) {
+                if(hasPath(i, v2, visited, path + to_string(v1)))
+                    return true;
+            }
+        }
+        return false;
     }
 
     void bfs(int s) {
