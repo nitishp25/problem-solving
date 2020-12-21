@@ -57,6 +57,19 @@ class Graph {
         return false;
     }
 
+    void allPaths(int v1, int v2, vector<bool> &visited, string path) {
+        visited[v1] = true;
+        if(v1 == v2) {
+            path.append(to_string(v1));
+            cout<<path<<endl;
+            return;
+        }
+        for(int i : adj[v1]) {
+            if(!visited[i])
+                allPaths(i, v2, visited, path + to_string(v1));
+        }
+    }
+
     void bfs(int s) {
 
         queue<int> q;
@@ -87,6 +100,56 @@ class Graph {
         }
     }
 
+    int gcc(vector<bool> &visited) {
+        int ans = 0;
+        for(int i = 0; i < size; i++) {
+            if(!visited[i]) {
+                dfs(i, visited);
+                ans++;
+            }
+        }
+        return ans;
+    }
+
+    bool hasCycleUndir(int s, vector<bool> &visited, int par) {
+        visited[s] = true;
+        for(int i : adj[s]) {
+            if(!visited[i]) {
+                if(hasCycleUndir(i, visited, s))
+                    return true;
+            }
+            else if(i != par)
+                return true;
+        }
+        return false;
+    }
+
+    bool hasCycleDir(int s, vector<bool> &visited, vector<bool> &recur) {
+        visited[s] = true;
+        recur[s] = true;
+        for(int i : adj[s]) {
+            if(!visited[i]) {
+                if(hasCycleDir(i, visited, recur))
+                    return true;
+            }
+            else if(recur[i] == true)
+                return true;
+        }
+        recur[s] = false;
+        return false;
+    }
+
+    int countCycles(int s, int par, vector<bool> &visited) {
+        visited[s] = true;
+        int ans = 0;
+        for(int i : adj[s]) {
+            if(!visited[i])
+                ans += countCycles(i, s, visited);
+            else if(i != par)
+                ans++;
+        }
+        return ans;
+    }
 };
 
 int main() {
