@@ -1,6 +1,7 @@
 #include <iostream>
 #include <queue>
 #include <vector>
+#include <stack>
 
 using namespace std;
 
@@ -149,6 +150,29 @@ class Graph {
                 ans++;
         }
         return ans;
+    }
+
+    void topologicalSort(int v, vector<bool> &visited, stack<int> &s) {
+        visited[v] = true;
+        for(int i : adj[v]) {
+            if(!visited[i]) {
+                topologicalSort(i, visited, s);
+            }
+        }
+        s.push(v);
+    }
+
+    void topologicalSort_util() {
+        vector<bool> visited(size, false);
+        stack<int> s;
+        for(int i = 0; i < size; i++) {
+            if(!visited[i])
+                topologicalSort(i, visited, s);
+        }
+        while(!s.empty()) {
+            cout<<s.top()<<" ";
+            s.pop();
+        }
     }
 };
 
