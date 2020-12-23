@@ -174,6 +174,37 @@ class Graph {
             s.pop();
         }
     }
+
+    void kahns_topological() {
+        vector<int> inDegree(size, 0);
+        vector<int> sorted;
+        queue<int> q;
+        for(int u = 0; u < size; u++)
+            for(int v : adj[u])
+                inDegree[v]++;
+        for(int i = 0; i < size; i++)
+            if(inDegree[i] == 0)
+                q.push(i);
+        int cnt = 0;
+        while(!q.empty()) {
+            int i = q.front();
+            q.pop();
+            sorted.push_back(i);
+            for(int v : adj[i]) {
+                inDegree[v]--;
+                if(inDegree[v] == 0)
+                    q.push(v);
+            }
+            cnt++;
+        }
+        if(cnt != size) {
+            cout<<"Invalid DAG\n";
+            return;
+        }
+        for(int v = 0; v < size; v++)
+            cout<<sorted[v]<<" ";
+        cout<<endl;
+    }
 };
 
 int main() {
