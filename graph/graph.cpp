@@ -205,6 +205,36 @@ class Graph {
             cout<<sorted[v]<<" ";
         cout<<endl;
     }
+
+    Graph reverse() {
+        Graph g(size);
+
+        for(int i = 0; i < size; i++) {
+            for(int v : adj[i]) {
+                g.adj[v].push_back(i);
+            }
+        }
+        return g;
+    }
+
+    void kosa_raju() {
+        stack<int> s;
+        vector<bool> visited(size, false);
+        for(int i = 0; i < size; i++) {
+            if(!visited[i])
+                topologicalSort(i, visited, s);
+        }
+        Graph g = reverse();
+        visited.assign(size, false);
+        while(!s.empty()) {
+            int v = s.top();
+            s.pop();
+            if(!visited[v]) {
+                g.dfs(v, visited);
+                cout<<endl;
+            }
+        }
+    }
 };
 
 int main() {
