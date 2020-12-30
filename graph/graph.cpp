@@ -10,15 +10,23 @@ class Graph {
     public:
     int size;
     vector<vector<int>> adj;
+    vector<vector<int>> weight;
 
     Graph(int s) {
         size = s;
         adj = vector<vector<int>>(s);
+        weight = vector<vector<int>>(s);
     }
 
     void addEdge(int v1, int v2) {
         adj[v1].push_back(v2);
         adj[v2].push_back(v1);
+    }
+
+    void addEdge(int v1, int v2, int w) {
+        adj[v1].push_back(v2);
+        adj[v2].push_back(v1);
+        weight[v1][v2] = w;
     }
 
     void removeEdge(int v1, int v2) {
@@ -234,6 +242,26 @@ class Graph {
                 cout<<endl;
             }
         }
+    }
+
+    void dijkstra() {
+
+        vector<int> heap(size, INT32_MAX);
+        vector<int> shortest_paths;
+        vector<int> parent(size, 0);
+        heap[0] = 0;
+        for(int i = 0; i < size; i++) {
+            int d = heap[0];
+            heap.erase(heap.begin());
+            shortest_paths.push_back(d);
+            for(int v : adj[d]) {
+                if(d + weight[d][v] < heap[v]) {
+                    heap[v] = d + weight[d][v]; 
+                    parent[v] = d;                   
+            }
+        }
+        for(int i = 0; i < size; i++)
+            cout<<shortest_paths[i]<<" ";
     }
 };
 
