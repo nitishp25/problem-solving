@@ -5,11 +5,22 @@
 
 using namespace std;
 
+class Edge {
+    public:
+    int s, d, w;
+    Edge(int source, int dest, int weight) {
+        s = source;
+        d = dest;
+        w = weight;
+    }
+};
+
 class Graph {
 
     public:
     int size;
     vector<vector<int>> adj;
+    vector<Edge> edges;
     vector<vector<int>> weight;
 
     Graph(int s) {
@@ -257,11 +268,55 @@ class Graph {
             for(int v : adj[d]) {
                 if(d + weight[d][v] < heap[v]) {
                     heap[v] = d + weight[d][v]; 
-                    parent[v] = d;                   
+                    parent[v] = d;
+                }
             }
         }
         for(int i = 0; i < size; i++)
             cout<<shortest_paths[i]<<" ";
+    }
+
+    void bellman_ford() {
+        vector<int> dist(size, INT32_MAX);
+        dist[0] = 0;
+
+        for(int i = 0; i < size-1; i++) {
+            for(Edge e : edges) {
+                int source = e.s;
+                int dest = e.d;
+                int weight = e.w;
+                if(dist[source] != INT32_MAX && dist[source] + weight < dist[dest])
+                    dist[dest] = dist[source] + weight;
+            }
+        }
+
+        // check -ve weight cycle
+        for(Edge e : edges) {
+                int source = e.s;
+                int dest = e.d;
+                int weight = e.w;
+                if(dist[source] != INT32_MAX && dist[source] + weight < dist[dest]) {
+                    cout<<"Negative weight cycle exists\n";
+                    return;
+                }
+        }
+
+        for(int d : dist)
+            cout<<d<<" ";
+        cout<<"\n";
+    }
+
+    void floyd_warshall() {
+        vector<vector<int>> dist(size, vector<int>(size));
+
+        for(int k = 0; k < size; k++) {
+            for(int i = 0; i < size; i++) {
+                for(int j = 0; j < size; j++) {
+                    if(dist[i][k] + dist[k][j] < dist[i][j])
+                        dist[i][j] = dist[i][k] + dist[k][j];
+                }
+            }
+        }
     }
 };
 
