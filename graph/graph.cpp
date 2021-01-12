@@ -1,6 +1,7 @@
 #include <iostream>
 #include <queue>
 #include <vector>
+#include <algorithm>
 #include <stack>
 
 using namespace std;
@@ -13,6 +14,12 @@ class Edge {
         d = dest;
         w = weight;
     }
+};
+
+class subset {
+    public:
+    int parent;
+    int rank;
 };
 
 class Graph {
@@ -316,6 +323,71 @@ class Graph {
                         dist[i][j] = dist[i][k] + dist[k][j];
                 }
             }
+        }
+    }
+
+    int find(vector<int> subsets, int i) {
+        if(subsets[i] != -1)
+            return find(subsets, subsets[i]);
+        return i;
+    }
+
+    void Union(vector<int> subsets, int x, int y) {
+        int a = find(subsets, x);
+        int b = find(subsets, y);
+        subsets[a] = b;
+    }
+
+    int find_compressed(vector<subset> subsets, int i) {
+        if(subsets[i].parent != i)
+            subsets[i].parent = find_compressed(subsets, subsets[i].parent);
+        return subsets[i].parent;
+    }
+
+    void Union_ranked(vector<subset> subsets, int x, int y) {
+        int a = find_compressed(subsets, x);
+        int b = find_compressed(subsets, y);
+
+        if(subsets[a].rank < subsets[b].rank)
+            subsets[a].parent = b;
+        else if(subsets[a].rank > subsets[b].rank)
+            subsets[b].parent = a;
+        else {
+            subsets[a].parent = b;
+            subsets[b].rank++;
+        }
+    }
+
+    void kruskal() {
+        sort(edges.begin(), edges.end());
+
+        vector<subset> subsets(size);
+
+        for(int i = 0; i < size; i++) {
+            subsets[i].parent = i;
+            subsets[i].rank = 0;
+        }
+
+        vector<Edge> ans(size);
+        int min_cost = 0;
+        
+        int e = 0, i = 0;
+
+        while(e < size-1 && i < edges.size()) {
+            Edge eg = edges[i++];
+            int a = find_compressed(subsets, eg.s);
+            int b = find_compressed(subsets, eg.d);
+
+            if(a != b) {
+                ans[e++] = eg;
+                Union_ranked(subsets, a, b);
+                min_cost += eg.w;
+            }
+        }
+
+        cout<<"Min Cost: "<<min_cost<<"\n";
+        for(i = 0; i < e; i++) {
+            cout<<ans[i].s<<" "<<ans[i].d<<" "<<ans[i].w<<"\n";
         }
     }
 };
