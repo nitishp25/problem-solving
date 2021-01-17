@@ -27,6 +27,7 @@ class Graph {
     public:
     int size;
     vector<vector<int>> adj;
+    vector<vector<pair<int, int>>> adj_w;
     vector<Edge> edges;
     vector<vector<int>> weight;
 
@@ -264,23 +265,26 @@ class Graph {
 
     void dijkstra() {
 
-        vector<int> heap(size, INT32_MAX);
-        vector<int> shortest_paths;
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>> > pq;
+
+        vector<int> dist(size, INT32_MAX);
+        vector<bool> visited(size, false);
         vector<int> parent(size, 0);
-        heap[0] = 0;
-        for(int i = 0; i < size; i++) {
-            int d = heap[0];
-            heap.erase(heap.begin());
-            shortest_paths.push_back(d);
-            for(int v : adj[d]) {
-                if(d + weight[d][v] < heap[v]) {
-                    heap[v] = d + weight[d][v]; 
-                    parent[v] = d;
+        dist[0] = 0;
+        pq.push({0, 0});
+        
+        while(!pq.empty()) {
+            pair<int, int> u = pq.top();
+            pq.pop();
+            visited[u.second] = true;
+            for(auto v : adj_w[u.second]) {
+                if(visited[v.first] == false && dist[u.second] + v.second < dist[v.first]) {
+                    dist[v.first] = dist[u.second] + v.second;
+                    pq.push({dist[v.first], v.first});
+                    parent[v.first] = u.second;
                 }
             }
         }
-        for(int i = 0; i < size; i++)
-            cout<<shortest_paths[i]<<" ";
     }
 
     void bellman_ford() {
@@ -388,6 +392,33 @@ class Graph {
         cout<<"Min Cost: "<<min_cost<<"\n";
         for(i = 0; i < e; i++) {
             cout<<ans[i].s<<" "<<ans[i].d<<" "<<ans[i].w<<"\n";
+        }
+    }
+
+    void prims() {
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>> > pq;
+
+        vector<int> key(size, INT16_MAX);
+        key[0] = 0;
+
+        vector<int> parent(size, -1);
+        vector<bool> inMST(size, false);
+
+        pq.push({0, 0});
+
+        while(!pq.empty()) {
+            pair<int, int> u = pq.top();
+            pq.pop();
+
+            inMST[u.second] = true;
+
+            for(auto v : adj_w[u.second]) {
+                if(inMST[v.first] == false && v.second < key[v.first]) {
+                    key[v.first] = v.second;
+                    pq.push({key[v.first], v.first});
+                    parent[v.first] = u.second;
+                }
+            }
         }
     }
 };
